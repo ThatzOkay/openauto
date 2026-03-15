@@ -151,7 +151,9 @@ set(autoapp_include_directory ${include_directory}/f1x/openauto/autoapp)
 
 file(GLOB_RECURSE autoapp_source_files ${autoapp_sources_directory}/*.ui ${autoapp_sources_directory}/*.cpp ${autoapp_include_directory}/*.hpp ${autoapp_include_directory}/*.h ${common_include_directory}/*.hpp ${resources_directory}/*.qrc)
 
-add_executable(autoapp ${autoapp_source_files})
+list(FILTER autoapp_source_files EXCLUDE REGEX "main.cpp$")
+
+add_library(openauto_autoapp ${autoapp_source_files})
 
 target_include_directories(autoapp PUBLIC ${AAP_PROTOBUF_INCLUDE_DIR} ${AASDK_INCLUDE_DIR})
 
