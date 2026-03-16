@@ -153,11 +153,11 @@ file(GLOB_RECURSE autoapp_source_files ${autoapp_sources_directory}/*.ui ${autoa
 
 list(FILTER autoapp_source_files EXCLUDE REGEX "main.cpp$")
 
-add_library(openauto_autoapp ${autoapp_source_files})
+add_library(openauto SHARED ${autoapp_source_files})
 
-target_include_directories(autoapp PUBLIC ${AAP_PROTOBUF_INCLUDE_DIR} ${AASDK_INCLUDE_DIR})
+target_include_directories(openauto PUBLIC ${AAP_PROTOBUF_INCLUDE_DIR} ${AASDK_INCLUDE_DIR})
 
-target_link_libraries(autoapp PUBLIC
+target_link_libraries(openauto PUBLIC
         libusb
         ${Boost_LIBRARIES}
         ${Qt5DBus_LIBRARIES}
@@ -218,12 +218,27 @@ target_link_libraries(btservice PUBLIC
         ${PROTOBUF_LIBRARIES}
         ${AAP_PROTOBUF_LIB_DIR})
 
-set_target_properties(autoapp
+set_target_properties(openauto
     PROPERTIES VERSION ${PROGRAM_VERSION_STRING} SOVERSION ${OPENAUTO_BUILD_MAJOR_RELEASE})
 
 # Install rules
-install(TARGETS autoapp btservice
+install(TARGETS openauto
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
+
+install(TARGETS btservice
     RUNTIME DESTINATION bin
+)
+
+# Install headers
+install(DIRECTORY ${include_directory}/f1x/openauto/autoapp
+    DESTINATION include/f1x/openauto
+    FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
+)
+install(DIRECTORY ${include_directory}/f1x/openauto/Common
+    DESTINATION include/f1x/openauto
+    FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
 )
 
 # Install udev rules
