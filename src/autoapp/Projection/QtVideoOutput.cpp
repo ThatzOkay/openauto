@@ -108,8 +108,8 @@ void QtVideoOutput::onStartPlayback()
     videoWidget_->setAspectRatioMode(Qt::IgnoreAspectRatio);
 
     if (videoFrame_) {
-        videoWidget_ = std::make_unique<QVideoWidget>(videoFrame_);
-        mediaPlayer_ = std::make_unique<QMediaPlayer>(nullptr, QMediaPlayer::StreamPlayback);
+        videoWidget_->setFullScreen(true);
+        OPENAUTO_LOG(info) << "[QtVideoOutput] Using provided video frame for output";
     } else {
         videoWidget_->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     
