@@ -28,7 +28,7 @@ namespace f1x {
 
         class ServiceFactory : public IServiceFactory {
         public:
-          ServiceFactory(boost::asio::io_service &ioService, configuration::IConfiguration::Pointer configuration);
+          ServiceFactory(boost::asio::io_service &ioService, configuration::IConfiguration::Pointer configuration, QWidget* videoFrame);
           ServiceList create(aasdk::messenger::IMessenger::Pointer messenger) override;
 
         private:
@@ -50,6 +50,7 @@ namespace f1x {
 
           boost::asio::io_service &ioService_;
           configuration::IConfiguration::Pointer configuration_;
+          QWidget* videoFrame_;
         };
 
       }

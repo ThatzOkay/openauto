@@ -39,7 +39,7 @@ class QtVideoOutput: public QObject, public VideoOutput, boost::noncopyable
     Q_OBJECT
 
 public:
-    QtVideoOutput(configuration::IConfiguration::Pointer configuration);
+    QtVideoOutput(configuration::IConfiguration::Pointer configuration, QWidget* videoFrame = nullptr);
     ~QtVideoOutput() override;
     bool open() override;
     bool init() override;
@@ -68,6 +68,7 @@ private:
     size_t bytesWritten_;
     std::mutex writeMutex_;
     static constexpr size_t INITIAL_BUFFER_SIZE = 65536; // 64KB initial buffer before checking state
+    QWidget* videoFrame_;
 };
 
 }

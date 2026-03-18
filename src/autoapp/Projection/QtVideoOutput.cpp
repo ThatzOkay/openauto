@@ -32,11 +32,12 @@ namespace autoapp
 namespace projection
 {
 
-QtVideoOutput::QtVideoOutput(configuration::IConfiguration::Pointer configuration)
+QtVideoOutput::QtVideoOutput(configuration::IConfiguration::Pointer configuration, QWidget* videoFrame)
     : VideoOutput(std::move(configuration))
     , playerReady_(false)
     , initialBufferingDone_(false)
     , bytesWritten_(0)
+    , videoFrame_(videoFrame)
 {
     this->moveToThread(QApplication::instance()->thread());
     connect(this, &QtVideoOutput::startPlayback, this, &QtVideoOutput::onStartPlayback, Qt::BlockingQueuedConnection);
@@ -56,7 +57,7 @@ QtVideoOutput::~QtVideoOutput()
 void QtVideoOutput::createVideoOutput()
 {
     OPENAUTO_LOG(info) << "[QtVideoOutput] createVideoOutput()";
-    videoWidget_ = std::make_unique<QVideoWidget>();
+    videoWidget_ = std::make_unique<QVideoWidget>(videoFrame_);
     mediaPlayer_ = std::make_unique<QMediaPlayer>(nullptr, QMediaPlayer::StreamPlayback);
 }
 
@@ -105,20 +106,25 @@ void QtVideoOutput::onStartPlayback()
     videoWidget_->setAttribute(Qt::WA_OpaquePaintEvent, true);
     videoWidget_->setAttribute(Qt::WA_NoSystemBackground, true);
     videoWidget_->setAspectRatioMode(Qt::IgnoreAspectRatio);
-    videoWidget_->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+
+    if (videoFrame_) {
+        videoWidget_->setGeometry(videoFrame_->rect());
+    } else {
+        videoWidget_->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     
-    // Get the physical screen geometry and set widget to exactly match it
-    QScreen *screen = QGuiApplication::primaryScreen();
-    if (screen != nullptr) {
-        QRect screenGeometry = screen->geometry();
-        videoWidget_->setGeometry(screenGeometry);
-        OPENAUTO_LOG(info) << "[QtVideoOutput] Set video widget geometry to: " 
+        // Get the physical screen geometry and set widget to exactly match it
+        QScreen *screen = QGuiApplication::primaryScreen();
+        if (screen != nullptr) {
+            QRect screenGeometry = screen->geometry();
+            videoWidget_->setGeometry(screenGeometry);
+            OPENAUTO_LOG(info) << "[QtVideoOutput] Set video widget geometry to: " 
                            << screenGeometry.width() << "x" << screenGeometry.height()
                            << " at (" << screenGeometry.x() << "," << screenGeometry.y() << ")";
-    } else {
-        // Fallback to fullscreen if screen detection fails
-        videoWidget_->setFullScreen(true);
-        OPENAUTO_LOG(warning) << "[QtVideoOutput] Could not detect screen, using setFullScreen()";
+        } else {
+            // Fallback to fullscreen if screen detection fails
+            videoWidget_->setFullScreen(true);
+            OPENAUTO_LOG(warning) << "[QtVideoOutput] Could not detect screen, using setFullScreen()";
+        }
     }
     
     videoWidget_->raise();

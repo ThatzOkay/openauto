@@ -50,8 +50,9 @@
 namespace f1x::openauto::autoapp::service {
 
   ServiceFactory::ServiceFactory(boost::asio::io_service &ioService,
-                                 configuration::IConfiguration::Pointer configuration)
-      : ioService_(ioService), configuration_(std::move(configuration)) {
+                                 configuration::IConfiguration::Pointer configuration,
+                                 QWidget* videoFrame = nullptr)
+      : ioService_(ioService), configuration_(std::move(configuration)), videoFrame_(videoFrame) {
 
   }
 
@@ -179,7 +180,7 @@ namespace f1x::openauto::autoapp::service {
 #ifdef USE_OMX
     auto videoOutput(std::make_shared<projection::OMXVideoOutput>(configuration_));
 #else
-    projection::IVideoOutput::Pointer videoOutput(new projection::QtVideoOutput(configuration_),
+    projection::IVideoOutput::Pointer videoOutput(new projection::QtVideoOutput(configuration_, videoFrame_),
                                                   std::bind(&QObject::deleteLater, std::placeholders::_1));
 #endif
 
