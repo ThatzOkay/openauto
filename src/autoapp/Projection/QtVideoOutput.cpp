@@ -108,7 +108,8 @@ void QtVideoOutput::onStartPlayback()
     videoWidget_->setAspectRatioMode(Qt::IgnoreAspectRatio);
 
     if (videoFrame_) {
-        videoWidget_->setGeometry(videoFrame_->rect());
+        videoWidget_ = std::make_unique<QVideoWidget>(videoFrame_);
+        mediaPlayer_ = std::make_unique<QMediaPlayer>(nullptr, QMediaPlayer::StreamPlayback);
     } else {
         videoWidget_->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     

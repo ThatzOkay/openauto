@@ -27,51 +27,51 @@
 
 namespace f1x
 {
-namespace openauto
-{
-namespace autoapp
-{
-namespace projection
-{
+    namespace openauto
+    {
+        namespace autoapp
+        {
+            namespace projection
+            {
 
-class QtVideoOutput: public QObject, public VideoOutput, boost::noncopyable
-{
-    Q_OBJECT
+                class QtVideoOutput : public QObject, public VideoOutput, boost::noncopyable
+                {
+                    Q_OBJECT
 
-public:
-    QtVideoOutput(configuration::IConfiguration::Pointer configuration, QWidget* videoFrame = nullptr);
-    ~QtVideoOutput() override;
-    bool open() override;
-    bool init() override;
-    void write(uint64_t timestamp, const aasdk::common::DataConstBuffer& buffer) override;
-    void stop() override;
+                public:
+                    QtVideoOutput(configuration::IConfiguration::Pointer configuration, QWidget *videoFrame = nullptr);
+                    ~QtVideoOutput() override;
+                    bool open() override;
+                    bool init() override;
+                    void write(uint64_t timestamp, const aasdk::common::DataConstBuffer &buffer) override;
+                    void stop() override;
 
-signals:
-    void startPlayback();
-    void stopPlayback();
+                signals:
+                    void startPlayback();
+                    void stopPlayback();
 
-protected slots:
-    void createVideoOutput();
-    void onStartPlayback();
-    void onStopPlayback();
-    void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
-    void onStateChanged(QMediaPlayer::State state);
-    void onError(QMediaPlayer::Error error);
+                protected slots:
+                    void createVideoOutput();
+                    void onStartPlayback();
+                    void onStopPlayback();
+                    void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
+                    void onStateChanged(QMediaPlayer::State state);
+                    void onError(QMediaPlayer::Error error);
 
-private:
-    void cleanupPlayer();
-    SequentialBuffer videoBuffer_;
-    std::unique_ptr<QVideoWidget> videoWidget_;
-    std::unique_ptr<QMediaPlayer> mediaPlayer_;
-    bool playerReady_;
-    bool initialBufferingDone_;
-    size_t bytesWritten_;
-    std::mutex writeMutex_;
-    static constexpr size_t INITIAL_BUFFER_SIZE = 65536; // 64KB initial buffer before checking state
-    QWidget* videoFrame_;
-};
+                private:
+                    void cleanupPlayer();
+                    SequentialBuffer videoBuffer_;
+                    std::unique_ptr<QVideoWidget> videoWidget_;
+                    std::unique_ptr<QMediaPlayer> mediaPlayer_;
+                    bool playerReady_;
+                    bool initialBufferingDone_;
+                    size_t bytesWritten_;
+                    std::mutex writeMutex_;
+                    static constexpr size_t INITIAL_BUFFER_SIZE = 65536; // 64KB initial buffer before checking state
+                    QWidget *videoFrame_;
+                };
 
-}
-}
-}
+            }
+        }
+    }
 }
