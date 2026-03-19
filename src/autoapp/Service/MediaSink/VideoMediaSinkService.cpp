@@ -100,10 +100,10 @@ namespace f1x {
 
           void
           VideoMediaSinkService::onMediaChannelSetupRequest(const aap_protobuf::service::media::shared::message::Setup &request) {
-            OPENAUTO_LOG(info) << "[VideoMediaSinkService] onMediaChannelSetupRequest()";
-            OPENAUTO_LOG(info) << "[VideoMediaSinkService] Channel Id: "
-                               << aasdk::messenger::channelIdToString(channel_->getId()) << ", Codec: "
-                               << MediaCodecType_Name(request.type());
+            // OPENAUTO_LOG(info) << "[VideoMediaSinkService] onMediaChannelSetupRequest()";
+            // OPENAUTO_LOG(info) << "[VideoMediaSinkService] Channel Id: "
+            //                    << aasdk::messenger::channelIdToString(channel_->getId()) << ", Codec: "
+            //                    << MediaCodecType_Name(request.type());
 
 
             auto status = videoOutput_->init()
@@ -170,9 +170,9 @@ namespace f1x {
 
           void VideoMediaSinkService::onMediaWithTimestampIndication(aasdk::messenger::Timestamp::ValueType timestamp,
                                                                      const aasdk::common::DataConstBuffer &buffer) {
-            OPENAUTO_LOG(debug) << "[VideoMediaSinkService] onMediaWithTimestampIndication()";
-            OPENAUTO_LOG(debug) << "[VideoMediaSinkService] Channel Id: "
-                               << aasdk::messenger::channelIdToString(channel_->getId()) << ", session: " << session_;
+            // OPENAUTO_LOG(debug) << "[VideoMediaSinkService] onMediaWithTimestampIndication()";
+            // OPENAUTO_LOG(debug) << "[VideoMediaSinkService] Channel Id: "
+            //                    << aasdk::messenger::channelIdToString(channel_->getId()) << ", session: " << session_;
 
             videoOutput_->write(timestamp, buffer);
 

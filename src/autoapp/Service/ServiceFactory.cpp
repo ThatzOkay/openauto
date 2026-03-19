@@ -197,7 +197,10 @@ namespace f1x::openauto::autoapp::service
     if (activeCallback_ != nullptr)
     {
       QObject::connect(qtVideoOutput_, &projection::QtVideoOutput::startPlayback, [callback = activeCallback_]()
-                       { callback(true); });
+                       { 
+                        OPENAUTO_LOG(info) << "[ServiceFactory Running video output callback]";
+                        callback(true); 
+                      });
       QObject::connect(qtVideoOutput_, &projection::QtVideoOutput::stopPlayback, [this]()
                        {
             activeCallback_(false);
