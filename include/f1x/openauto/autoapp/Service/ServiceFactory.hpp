@@ -50,7 +50,8 @@ namespace f1x {
 
           boost::asio::io_service &ioService_;
           configuration::IConfiguration::Pointer configuration_;
-          QWidget* videoFrame_;
+          QWidget* activeArea_;
+          std::function<void(bool)> activeCallback_;
         };
 
       }

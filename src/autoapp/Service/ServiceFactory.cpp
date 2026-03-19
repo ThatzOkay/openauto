@@ -51,8 +51,8 @@ namespace f1x::openauto::autoapp::service {
 
   ServiceFactory::ServiceFactory(boost::asio::io_service &ioService,
                                  configuration::IConfiguration::Pointer configuration,
-                                 QWidget* videoFrame = nullptr)
-      : ioService_(ioService), configuration_(std::move(configuration)), videoFrame_(videoFrame) {
+                                 QWidget* activeArea = nullptr, std::function<void(bool)> activeCallback = nullptr)
+      : ioService_(ioService), configuration_(std::move(configuration)), activeArea_(activeArea), activeCallback_(activeCallback) {
 
   }
 
@@ -180,8 +180,19 @@ namespace f1x::openauto::autoapp::service {
 #ifdef USE_OMX
     auto videoOutput(std::make_shared<projection::OMXVideoOutput>(configuration_));
 #else
-    projection::IVideoOutput::Pointer videoOutput(new projection::QtVideoOutput(configuration_, videoFrame_),
+    projection::IVideoOutput::Pointer videoOutput(new projection::QtVideoOutput(configuration_, activeArea_),
                                                   std::bind(&QObject::deleteLater, std::placeholders::_1));
+
+    if (activeCallback_ != nullptr) {
+      QObject::connect(videoOutput, &projection::QtVideoOutput::startPlayback, [this]() {
+        activeCallback_(true);
+      });
+      QObject::connect(videoOutput, &projection::QtVideoOutput::stopPlayback, [this]() {
+        activeCallback_(false);
+        videoOutput->disconnect();
+        videoOutput = nullptr;
+      });
+    }
 #endif
 
     OPENAUTO_LOG(info) << "[ServiceFactory] Video Channel enabled";
