@@ -21,14 +21,22 @@
 #include <f1x/openauto/autoapp/Service/IServiceFactory.hpp>
 #include <f1x/openauto/autoapp/Configuration/IConfiguration.hpp>
 
-namespace f1x {
-  namespace openauto {
-    namespace autoapp {
-      namespace service {
+#include <f1x/openauto/autoapp/Projection/QtVideoOutput.hpp>
+#include <f1x/openauto/autoapp/Projection/OMXVideoOutput.hpp>
 
-        class ServiceFactory : public IServiceFactory {
+namespace f1x
+{
+  namespace openauto
+  {
+    namespace autoapp
+    {
+      namespace service
+      {
+
+        class ServiceFactory : public IServiceFactory
+        {
         public:
-          ServiceFactory(boost::asio::io_service &ioService, configuration::IConfiguration::Pointer configuration, QWidget* videoFrame);
+          ServiceFactory(boost::asio::io_service &ioService, configuration::IConfiguration::Pointer configuration, QWidget* activeArea=nullptr, std::function<void(bool)> activeCallback=nullptr);
           ServiceList create(aasdk::messenger::IMessenger::Pointer messenger) override;
 
         private:
@@ -50,8 +58,14 @@ namespace f1x {
 
           boost::asio::io_service &ioService_;
           configuration::IConfiguration::Pointer configuration_;
-          QWidget* activeArea_;
+          QWidget *activeArea_;
           std::function<void(bool)> activeCallback_;
+
+#if defined USE_OMX
+    std::shared_ptr<projection::OMXVideoOutput> omxVideoOutput_;
+#else
+    projection::QtVideoOutput *qtVideoOutput_;
+#endif
         };
 
       }
